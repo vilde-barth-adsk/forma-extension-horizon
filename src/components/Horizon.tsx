@@ -4,7 +4,9 @@ import { addElement } from "../AddElement.ts";
 
 export function Horizon() {
   const [geoLocation, setGeoLocation] = useState<[number, number] | undefined>(undefined);
-  const [horizonData, setHorizonData] = useState<[{azimuth: number, horizon: number}] | undefined>(undefined);
+  const [horizonData, setHorizonData] = useState<
+    [{ azimuth: number; horizon: number }] | undefined
+  >(undefined);
   const [elevation, setElevation] = useState(undefined);
   const [mesh, setMesh] = useState<Float32Array | undefined>(undefined);
 
@@ -47,7 +49,7 @@ export function Horizon() {
   };*/
 
   useEffect(() => {
-    if (horizonData && elevation){
+    if (horizonData && elevation) {
       const startZ = elevation - 100;
       const position = new Float32Array((horizonData.length - 1) * 6 * 3);
       const rad = 5000;
