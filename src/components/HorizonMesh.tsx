@@ -61,7 +61,7 @@ function splitTriangles(triangles: Float32Array) {
   return newTriangles;
 }
 
-export function HorizonMesh({horizonData, elevation}){
+export function HorizonMesh({ horizonData, elevation }) {
   const [mesh, setMesh] = useState<Float32Array | undefined>(undefined);
 
   useEffect(() => {
@@ -104,21 +104,21 @@ export function HorizonMesh({horizonData, elevation}){
 
   const preview = () => {
     const colors = [
-          [96,140,165,255],
-          [128,160,182,255],
-          [128,160,182,255],
-          [175,196,213,255],
-          [194,214,228,255],
-          [207,221,230,255],
+      [96, 140, 165, 255],
+      [128, 160, 182, 255],
+      [128, 160, 182, 255],
+      [175, 196, 213, 255],
+      [194, 214, 228, 255],
+      [207, 221, 230, 255],
     ];
     if (mesh) {
-        const newMesh = splitTriangles(splitTriangles(mesh));
-        const zValues = newMesh.filter((_, i) => i % 3 === 2);
+      const newMesh = splitTriangles(splitTriangles(mesh));
+      const zValues = newMesh.filter((_, i) => i % 3 === 2);
       const minZ = Math.min(...zValues);
       const maxZ = Math.max(...zValues);
       const color = new Uint8Array(4 * zValues.length);
       for (let i = 0; i < zValues.length; i++) {
-        const index = Math.floor(((zValues[i] - minZ) / (maxZ - minZ)) * (colors.length-1));
+        const index = Math.floor(((zValues[i] - minZ) / (maxZ - minZ)) * (colors.length - 1));
         color[4 * i] = colors[index][0];
         color[4 * i + 1] = colors[index][1];
         color[4 * i + 2] = colors[index][2];
@@ -134,9 +134,11 @@ export function HorizonMesh({horizonData, elevation}){
   };
 
   return (
-    <div style={{display: "flex"}}>
+    <div style={{ display: "flex" }}>
       <weave-button onClick={preview}>Preview</weave-button>
-      <weave-button variant="solid" onClick={addMeshToProposal}>Add to proposal</weave-button>
+      <weave-button variant="solid" onClick={addMeshToProposal}>
+        Add to proposal
+      </weave-button>
       <canvas width="500px" height="500px" id="horizonGraph" />
     </div>
   );
