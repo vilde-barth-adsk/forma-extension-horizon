@@ -12,13 +12,7 @@ h1 {
   font-size: 12px;
 }
 
-weave-button {
-  width: 100%;
+h4 {
+  margin-bottom: 5px;
 }
 
-weave-select {
-  height: 24px;
-  width: 100%;
-  font-weight: 600;
-  font-size: 11px;
-}

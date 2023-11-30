@@ -61,51 +61,8 @@ function splitTriangles(triangles: Float32Array) {
   return newTriangles;
 }
 
-export function Horizon() {
-  const [geoLocation, setGeoLocation] = useState<[number, number] | undefined>(undefined);
-  const [horizonData, setHorizonData] = useState<
-    [{ azimuth: number; horizon: number }] | undefined
-  >(undefined);
-  const [elevation, setElevation] = useState(undefined);
+export function HorizonMesh({horizonData, elevation}){
   const [mesh, setMesh] = useState<Float32Array | undefined>(undefined);
-
-  useEffect(() => {
-    Forma.project.getGeoLocation().then((geoLocation) => {
-      setGeoLocation(geoLocation);
-    });
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!geoLocation) {
-        return;
-      }
-      const res = await fetch(
-        `https://cors-anywhere.herokuapp.com/https://re.jrc.ec.europa.eu/api/v5_2/printhorizon?lat=${geoLocation[0]}&lon=${geoLocation[1]}&browser=0&outputformat=json&js=1`,
-      );
-      const data = await res.json();
-      setHorizonData(
-        data["outputs"]["horizon_profile"].map((x: any) => {
-          return { azimuth: x["A"], horizon: x["H_hor"] };
-        }),
-      );
-      setElevation(data["inputs"]["location"]["elevation"]);
-    };
-    fetchData();
-  }, [geoLocation]);
-
-  /*const drawHorizon = () => {
-    const canvas = document.getElementById("horizonGraph");
-    const ctx = canvas.getContext("2d");
-    if (ctx) {
-      ctx.beginPath();
-      ctx.moveTo(0, horizonData[0]["horizon"]);
-      for (let i = 0; i < horizonData.length; i++) {
-        ctx.lineTo(i * 5, horizonData[i]["horizon"]);
-      }
-      ctx.stroke();
-    }
-  };*/
 
   useEffect(() => {
     if (horizonData && elevation) {
@@ -141,33 +98,33 @@ export function Horizon() {
         position[18 * i + 16] = y2;
         position[18 * i + 17] = z2;
       }
-      const newPositions = splitTriangles(splitTriangles(position));
-      setMesh(newPositions);
+      setMesh(position);
     }
   }, [horizonData]);
 
   const preview = () => {
     const colors = [
-      [96, 140, 165, 255],
-      [128, 160, 182, 255],
-      [128, 160, 182, 255],
-      [175, 196, 213, 255],
-      [194, 214, 225, 255],
-      [194, 214, 225, 255],
+          [96,140,165,255],
+          [128,160,182,255],
+          [128,160,182,255],
+          [175,196,213,255],
+          [194,214,228,255],
+          [207,221,230,255],
     ];
     if (mesh) {
-      const zValues = mesh.filter((_, i) => i % 3 === 2);
+        const newMesh = splitTriangles(splitTriangles(mesh));
+        const zValues = newMesh.filter((_, i) => i % 3 === 2);
       const minZ = Math.min(...zValues);
       const maxZ = Math.max(...zValues);
       const color = new Uint8Array(4 * zValues.length);
       for (let i = 0; i < zValues.length; i++) {
-        const index = Math.floor(((zValues[i] - minZ) / (maxZ - minZ)) * 5);
+        const index = Math.floor(((zValues[i] - minZ) / (maxZ - minZ)) * (colors.length-1));
         color[4 * i] = colors[index][0];
         color[4 * i + 1] = colors[index][1];
         color[4 * i + 2] = colors[index][2];
         color[4 * i + 3] = colors[index][3];
       }
-      Forma.render.updateMesh({ id: "horizon", geometryData: { position: mesh, color } });
+      Forma.render.updateMesh({ id: "horizon", geometryData: { position: newMesh, color } });
     }
   };
   const addMeshToProposal = () => {
@@ -177,10 +134,10 @@ export function Horizon() {
   };
 
   return (
-    <>
-      <button onClick={preview}>Preview</button>
-      <button onClick={addMeshToProposal}>Add to proposal</button>
+    <div style={{display: "flex"}}>
+      <weave-button onClick={preview}>Preview</weave-button>
+      <weave-button variant="solid" onClick={addMeshToProposal}>Add to proposal</weave-button>
       <canvas width="500px" height="500px" id="horizonGraph" />
-    </>
+    </div>
   );
 }
