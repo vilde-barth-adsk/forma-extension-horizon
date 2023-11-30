@@ -4,6 +4,7 @@ import { Forma } from "forma-embedded-view-sdk/auto";
 import { HorizonGraph } from "./components/HorizonGraph.tsx";
 
 export default function App() {
+  const [warning, setWarning] = useState(false);
   const [geoLocation, setGeoLocation] = useState<[number, number] | undefined>(undefined);
   const [horizonData, setHorizonData] = useState<
     [{ azimuth: number; horizon: number }] | undefined
@@ -50,9 +51,20 @@ export default function App() {
     fetchData();
   }, [geoLocation]);
 
+  useEffect(() => {
+    const max = Math.max(...horizonData.map((x) => x.horizon));
+    if (max < 20) setWarning(true);
+  }, [horizonData]);
+
   return (
     <div style={{ display: "block", fontSize: "12px" }}>
       <h2>Impact of horizon</h2>
+      {warning && (
+        <div style={{ color: "red" }}>
+          Warning: The horizon on this location is not very significant. This extension provides
+          more value in locations surrounded by higher mountains.
+        </div>
+      )}
       <span style={{ marginBottom: "12px" }}>
         Inspect if there are hills or mountains outside your map area that block the light.
       </span>
