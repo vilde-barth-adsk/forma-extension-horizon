@@ -4,8 +4,8 @@ import { addElement } from "../AddElement.ts";
 
 export function Horizon() {
   const [geoLocation, setGeoLocation] = useState<[number, number] | undefined>(undefined);
-  const [horizonData, setHorizonData] = useState();
-  const [elevation, setElevation] = useState();
+  const [horizonData, setHorizonData] = useState<[{azimuth: number, horizon: number}] | undefined>(undefined);
+  const [elevation, setElevation] = useState(undefined);
   const [mesh, setMesh] = useState<Float32Array | undefined>(undefined);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export function Horizon() {
     fetchData();
   }, [geoLocation]);
 
-  const drawHorizon = () => {
+  /*const drawHorizon = () => {
     const canvas = document.getElementById("horizonGraph");
     const ctx = canvas.getContext("2d");
     if (ctx) {
@@ -44,12 +44,12 @@ export function Horizon() {
       }
       ctx.stroke();
     }
-  };
+  };*/
 
   useEffect(() => {
-    if (horizonData) {
+    if (horizonData && elevation){
       const startZ = elevation - 100;
-      const position: Float32Array = new Float32Array((horizonData.length - 1) * 6 * 3);
+      const position = new Float32Array((horizonData.length - 1) * 6 * 3);
       const rad = 5000;
       for (let i = 0; i < horizonData.length - 1; i++) {
         const angle1 = horizonData[i]["azimuth"] + 180;
