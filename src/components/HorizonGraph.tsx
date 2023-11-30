@@ -47,11 +47,13 @@ export function HorizonGraph({ horizon, summer, winter }) {
   }, [summer, winter]);
 
   return (
-    <>
+    <div style={{ marginTop: "25px" }}>
+      Below you can see the horizon profile together with the sun path at winter and summer
+      solstice.
       <h4>Winter solstice</h4>
       <canvas width="380px" height="110px" id="winter" style="border:1px solid #000000;" />
       <h4>Summer solstice</h4>
       <canvas width="380px" height="110px" id="summer" style="border:1px solid #000000;" />
-    </>
+    </div>
   );
 }

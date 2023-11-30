@@ -52,14 +52,18 @@ export default function App() {
 
   return (
     <div style={{ display: "block", fontSize: "12px" }}>
-      <div style={{ marginBottom: "12px" }}>
-        Inspect if there are hills or mountains outside your map area that block the light. Preview
-        or add horizon geometry to your proposal to get more accurate sun results.
-      </div>
+      <h2>Impact of horizon</h2>
+      <span style={{ marginBottom: "12px" }}>
+        Inspect if there are hills or mountains outside your map area that block the light.
+      </span>
+      <p>
+        Preview to get a feeling of the horizon on your location. Add the horizon geometry to your
+        proposal and run the sun analysis to include the effect of the blocking horizon.
+      </p>
+      {horizonData && elevation && <HorizonMesh horizonData={horizonData} elevation={elevation} />}
       {horizonData && summerData && winterData && (
         <HorizonGraph horizon={horizonData} summer={summerData} winter={winterData} />
       )}
-      {horizonData && elevation && <HorizonMesh horizonData={horizonData} elevation={elevation} />}
     </div>
   );
 }
